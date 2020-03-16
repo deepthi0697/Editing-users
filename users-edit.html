@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+</head>
+
+
+<body>
+    <div id = 'root'>   
+    </div>
+
+    <!-- https://unpkg.com/browse/react@16.12.0/umd/react.development.js --->
+    <script src = "./js/react.development.js"></script>
+    <!-- https://unpkg.com/browse/react@16.12.0/umd/react-dom.development.js --->
+    <script src = "./js/react-dom.development.js"></script>
+    <!-- https://unpkg.com/browse/babel-standalone@6.26.0/babel.js -->
+    <script src = "./js/babel.js"></script>
+    <!--https://unpkg.com/axios@0.19.0/dist/axios.js-->
+    <script src='./js/axios.js'></script>
+
+    <script type = "text/babel">
+        const rootHandle = document.getElementById('root')
+        
+        class UsersEdit extends React.Component {
+            constructor(){
+                super()
+                this.state = {
+                    users : [
+                        {id: 1, name: 'user1', email: 'user1@gmail.com', isEditable: false},
+                        {id: 2, name: 'user2', email: 'user2@gmail.com', isEditable: false},
+                        {id: 3, name: 'user3', email: 'user3@gmail.com', isEditable: false},
+                        {id: 4, name: 'user4', email: 'user4@gmail.com', isEditable: false}
+                    ]
+                   
+                }
+            }
+
+            handleClick = (id) => {
+                console.log('handleClick')
+                this.setState(prevState => {
+                   return {users: prevState.users.map((user)=> {
+                        if(user.id !== id){
+                            return Object.assign({},user)
+                        } else {
+                            return Object.assign({},user,{isEditable: !user.isEditable})
+                        }
+                    })}
+                })
+            }
+
+            handleNameChange = (e,id) => {
+                const name = e.target.value
+                this.setState(prevState => {
+                    return {users: prevState.users.map(user => {
+                        if(user.id !== id){
+                            return Object.assign({}, user)
+                        } else {
+                            return Object.assign({}, user, {name})
+                    }
+                    })}
+                })
+            }
+
+            handleEmailChange = (e,id) => {
+                const email = e.target.value
+                this.setState(prevState => {
+                    return {users: prevState.users.map(user => {
+                        if(user.id !== id){
+                            return Object.assign({}, user)
+                        } else {
+                            return Object.assign({}, user, {email})
+                    }
+                    })}
+                })
+            }
+
+            render(){
+                return (
+                    <div>
+                        <h1>Listing Users - {this.state.users.length}</h1>
+                        <table border='1'>
+                            <thead>
+                                <tr>
+                                    <th>Id</th>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {
+                                    this.state.users.map((user) => {
+                                        if(user.isEditable === false){
+                                            return (
+                                                <tr key={user.id}>
+                                                    <td>{user.id}</td>
+                                                    <td>{user.name}</td> 
+                                                    <td>{user.email}</td> 
+                                                    <td><button onClick = {() => {this.handleClick(user.id)}}>Edit</button></td>    
+                                                </tr>
+                                            )
+                                        } else {
+                                            return (
+                                              
+                                                <tr key={user.id}>
+                                                    <td>{user.id}</td>
+                                                    <td><input type='text' value={user.name} onChange={(e) => {this.handleNameChange(e,user.id)}}/></td>
+                                                    <td><input type='text' value={user.email} onChange={(e) => {this.handleEmailChange(e,user.id)}}/></td>
+                                                    <td><button onClick = {() => {this.handleClick(user.id)}}>Save</button></td>
+                                                </tr>
+                                            )
+                                            
+                                        }
+                                    })
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+
+                )
+            }
+        }
+        ReactDOM.render(<UsersEdit />, rootHandle)
+    </script>
+
+</body>
+</html>
